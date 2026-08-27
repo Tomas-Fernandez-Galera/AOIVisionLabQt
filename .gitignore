@@ -1,0 +1,13 @@
+build/
+dist/
+*.user
+*.user.*
+Makefile
+debug/
+release/
+.qmake.stash
+vcpkg_installed/
+__pycache__/
+*.py[cod]
+automation/test-report.json
+automation/test-result.png

@@ -1,0 +1,15 @@
+{
+  "name": "aoi-vision-lab-qt",
+  "version-string": "0.1.0",
+  "dependencies": [
+    {
+      "name": "opencv4",
+      "default-features": false,
+      "features": [
+        "calib3d",
+        "jpeg",
+        "png"
+      ]
+    }
+  ]
+}

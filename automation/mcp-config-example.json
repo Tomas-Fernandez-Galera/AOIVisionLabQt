@@ -1,0 +1,10 @@
+{
+  "mcpServers": {
+    "aoi-vision-lab": {
+      "command": "python",
+      "args": [
+        "C:/Proyectos/AOIVisionLabQt/automation/aoi_mcp_server.py"
+      ]
+    }
+  }
+}
