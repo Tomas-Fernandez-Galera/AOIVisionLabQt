@@ -18,7 +18,13 @@ from typing import Any
 
 
 ROOT = Path(__file__).resolve().parents[1]
-EXE = ROOT / "build" / "Desktop_Qt_6_10_2_MinGW_64_bit-Debug" / "AOIVisionLabQt.exe"
+EXE_CANDIDATES = [
+    Path(os.environ["AOI_VISION_EXE"]).expanduser() if os.environ.get("AOI_VISION_EXE") else None,
+    ROOT / "AOIVisionLabQt.exe",  # Portable package layout.
+    ROOT / "build" / "Desktop_Qt_6_10_2_MinGW_64_bit-Debug" / "AOIVisionLabQt.exe",
+]
+EXE = next((path.resolve() for path in EXE_CANDIDATES if path and path.is_file()),
+           ROOT / "AOIVisionLabQt.exe")
 QT_BIN = Path(r"C:\Qt\6.10.2\mingw_64\bin")
 OPENCV_BIN = ROOT / "vcpkg_installed" / "x64-mingw-dynamic" / "debug" / "bin"
 
@@ -60,7 +66,12 @@ def analyze(arguments: dict[str, Any]) -> dict[str, Any]:
         command.extend(["--visualization", str(Path(str(visualization)).expanduser().resolve())])
 
     environment = os.environ.copy()
-    environment["PATH"] = os.pathsep.join((str(QT_BIN), str(OPENCV_BIN), environment.get("PATH", "")))
+    # A portable package keeps all DLLs beside the executable. Development
+    # builds additionally need the Qt and vcpkg directories on PATH.
+    search_paths = [str(EXE.parent)]
+    search_paths.extend(str(path) for path in (QT_BIN, OPENCV_BIN) if path.is_dir())
+    search_paths.append(environment.get("PATH", ""))
+    environment["PATH"] = os.pathsep.join(search_paths)
     completed = subprocess.run(command, env=environment, capture_output=True,
                                text=True, timeout=120, check=False)
     if not report.is_file():

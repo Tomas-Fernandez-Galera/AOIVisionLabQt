@@ -47,5 +47,6 @@ OTHER_FILES += \
     README.md \
     automation/aoi_mcp_server.py \
     automation/mcp-config-example.json \
+    scripts/package-portable.ps1 \
     vcpkg.json \
     .gitignore
