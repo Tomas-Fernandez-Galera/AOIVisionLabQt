@@ -63,6 +63,8 @@ void ZoomImageLabel::paintEvent(QPaintEvent *event)
 
     Q_UNUSED(event);
     QPainter painter(this);
+    // Interpolation looks cleaner while fitted, but at high magnification it
+    // would blur the exact pixels an AOI operator needs to inspect.
     painter.setRenderHint(QPainter::SmoothPixmapTransform, zoomFactor < 5.0);
     const double scale = fittedScale() * zoomFactor;
     const QSizeF drawnSize(sourceImage.width() * scale, sourceImage.height() * scale);
@@ -78,6 +80,8 @@ void ZoomImageLabel::wheelEvent(QWheelEvent *event)
         return;
     }
 
+    // Preserve the image point under the mouse cursor while changing scale;
+    // zooming therefore feels anchored instead of jumping around the panel.
     const double oldScale = fittedScale() * zoomFactor;
     const QPointF cursor = event->position();
     const QPointF oldCentre(width() * 0.5 + panOffset.x(),

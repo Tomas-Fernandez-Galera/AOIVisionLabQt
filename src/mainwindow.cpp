@@ -59,6 +59,8 @@ MainWindow::~MainWindow()
 
 void MainWindow::prepareScreenshot(const QString &demoId, bool lightTheme)
 {
+    // Documentation screenshots must be reproducible and must never depend on
+    // whichever files an operator happened to open in the interactive window.
     const int index = ui->demoCombo->findData(demoId);
     if (index >= 0) {
         ui->demoCombo->setCurrentIndex(index);
@@ -70,6 +72,8 @@ void MainWindow::prepareScreenshot(const QString &demoId, bool lightTheme)
 
 QString MainWindow::uiText(const char *english, const char *spanish) const
 {
+    // Source strings stay next to the widget that consumes them.  This compact
+    // demo avoids a large translation catalogue while still exercising both UIs.
     return QString::fromUtf8(spanishLanguage ? spanish : english);
 }
 
@@ -105,6 +109,8 @@ void MainWindow::changeLanguage(int index)
 
 void MainWindow::populateDemoExamples()
 {
+    // Stable IDs are stored as item data; visible labels can therefore change
+    // language without coupling file selection to translated text.
     const QString selectedId = ui->demoCombo->currentData().toString();
     ui->demoCombo->clear();
     auto add = [this](const char *id, const char *english, const char *spanish) {
@@ -142,6 +148,8 @@ void MainWindow::populateDemoExamples()
 
 void MainWindow::applyLanguage()
 {
+    // Reapply every runtime-created string. Qt Designer defaults alone would
+    // otherwise leave mixed-language text after switching the selector.
     populateDemoExamples();
     ui->loadDemoButton->setText(uiText("Load example", "Cargar ejemplo"));
     ui->darkThemeCheck->setText(uiText("Light theme", "Tema claro"));
@@ -247,6 +255,7 @@ void MainWindow::chooseInspectionImage()
 void MainWindow::chooseImageForLabel(const QString &caption, QLabel *target,
                                      QImage &storage)
 {
+    // Keep the last successful directory for a faster repetitive AOI workflow.
     const QString path = QFileDialog::getOpenFileName(
         this, caption, QString(), uiText("Images (*.png *.jpg *.jpeg *.bmp *.tif *.tiff)",
                                         "Imágenes (*.png *.jpg *.jpeg *.bmp *.tif *.tiff)"));
@@ -256,6 +265,8 @@ void MainWindow::chooseImageForLabel(const QString &caption, QLabel *target,
 
 bool MainWindow::loadImage(const QString &path, QLabel *target, QImage &storage)
 {
+    // Decode first and update UI state only after success, preserving the
+    // previous valid image when an unsupported or damaged file is selected.
     const QImage image(path);
     if (image.isNull()) {
         statusBar()->showMessage(uiText("The selected image could not be opened",
@@ -329,6 +340,8 @@ void MainWindow::loadProjectDemo(const QString &referenceFileName,
                                  const QString &inspectionFileName,
                                  bool applyGeometricMisalignment)
 {
+    // Search upwards from the executable because Qt Creator places debug and
+    // release binaries in nested shadow-build directories.
     QDir directory(QCoreApplication::applicationDirPath());
     QString referencePath;
     QString inspectionPath;
@@ -366,6 +379,8 @@ void MainWindow::loadProjectDemo(const QString &referenceFileName,
 
 QImage MainWindow::createMisalignedCapture(const QImage &source) const
 {
+    // The deterministic projective transform represents a handheld/camera
+    // capture. It validates registration without changing the stored fixture.
     // This is an exact projective transformation, not a regenerated picture.
     // Therefore every component pixel remains tied to the original board and
     // any post-registration difference is attributable to interpolation or to
@@ -395,6 +410,8 @@ QImage MainWindow::createMisalignedCapture(const QImage &source) const
 
 void MainWindow::inspectImages()
 {
+    // This is deliberately a thin adapter: collect engine output, then render
+    // it. Keeping analysis outside the slot also enables CLI and MCP reuse.
     statusBar()->showMessage(uiText("Aligning and inspecting images…",
                                     "Alineando e inspeccionando imágenes…"));
     QApplication::setOverrideCursor(Qt::WaitCursor);
@@ -445,6 +462,8 @@ void MainWindow::inspectImages()
 
 void MainWindow::focusFinding(int row, int column)
 {
+    // Table rows and rectangles share insertion order, allowing direct and
+    // predictable navigation without hidden coordinate transformations.
     Q_UNUSED(column);
     if (row < 0 || row >= findingRegions.size())
         return;

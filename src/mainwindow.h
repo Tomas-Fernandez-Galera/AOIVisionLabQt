@@ -9,6 +9,14 @@ QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
 
+/**
+ * Coordinates the operator workflow around the reusable InspectionEngine.
+ *
+ * The window owns presentation state only: source images, translated labels,
+ * demo selection and finding navigation.  Image registration and comparison
+ * remain in InspectionEngine so CLI and MCP automation produce identical
+ * results without depending on the GUI.
+ */
 class MainWindow final : public QMainWindow
 {
     Q_OBJECT
@@ -16,6 +24,7 @@ class MainWindow final : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow() override;
+    /// Loads, inspects and styles a deterministic demo for documentation capture.
     void prepareScreenshot(const QString &demoId, bool lightTheme);
 
 private slots:
@@ -44,8 +53,14 @@ private:
     QString uiText(const char *english, const char *spanish) const;
 
     Ui::MainWindow *ui;
+
+    // Preferences are intentionally small and persisted by QSettings in the
+    // implementation.  The image state remains in memory and is never uploaded.
     bool darkTheme = true;
     bool spanishLanguage = false;
+
+    // Full-resolution images are retained here. ZoomImageLabel only controls
+    // how they are displayed and therefore never degrades inspection input.
     QImage referenceImage;
     QImage inspectionImage;
     QImage resultImage;

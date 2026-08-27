@@ -83,10 +83,14 @@ int runAutomatedInspection(const QCommandLineParser &parser)
 
 int main(int argc, char *argv[])
 {
+    // QApplication is required even in command mode because QImage uses Qt's
+    // image-format plugins. No window is created for automated inspections.
     QApplication application(argc, argv);
     QCoreApplication::setApplicationName(QStringLiteral("AOI Vision Lab Qt"));
     QCoreApplication::setOrganizationName(QStringLiteral("Tomasiky"));
 
+    // A stable command interface is the boundary used by scripts and MCP. It
+    // also prevents automation from having to simulate mouse and keyboard input.
     QCommandLineParser parser;
     parser.setApplicationDescription(QStringLiteral("PCB comparison and AOI demonstration"));
     parser.addHelpOption();
@@ -111,6 +115,8 @@ int main(int argc, char *argv[])
     MainWindow window;
     window.showMaximized();
     if (parser.isSet(QStringLiteral("screenshot"))) {
+        // QWidget::grab captures only application pixels, avoiding desktop,
+        // notifications and private paths in public documentation images.
         window.prepareScreenshot(parser.value(QStringLiteral("demo")),
                                  parser.isSet(QStringLiteral("light")));
         const QString output = QFileInfo(parser.value(QStringLiteral("screenshot"))).absoluteFilePath();
