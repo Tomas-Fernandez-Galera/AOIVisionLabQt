@@ -22,7 +22,7 @@ a production inspection system and must not be used to certify manufactured part
 - Responsive three-panel interface.
 - Reference and inspection image loading.
 - Light and dark themes.
-- Prepared for the OpenCV registration and comparison stage.
+- OpenCV registration, perspective correction and defect-region extraction.
 
 ## OpenCV dependency
 
@@ -37,7 +37,7 @@ C:\vcpkg\vcpkg.exe install --triplet x64-mingw-dynamic
 ## Open in Qt Creator
 
 Open `AOIVisionLabQt.pro`, select the Desktop Qt 6 MinGW 64-bit kit and build.
-# AI and MCP automation
+## AI and MCP automation
 
 The graphical application and external automation share the same C++/OpenCV
 inspection engine. A board can be inspected without opening the interface:
@@ -53,3 +53,66 @@ returns structured JSON and can save both the report and marked image. The
 server uses standard input/output, has no Python package dependencies and does
 not upload production images to any external service. A client configuration
 example is included in `automation/mcp-config-example.json`.
+
+---
+
+# AOI Vision Lab Qt — Español
+
+Demostración de escritorio del registro de imágenes y la detección de
+diferencias visuales aplicada a conceptos de inspección óptica automatizada.
+
+El proyecto sirve como demostración técnica y de portfolio. No es un sistema
+de inspección de producción y no debe utilizarse para certificar piezas
+fabricadas.
+
+## Capturas de pantalla
+
+### Alineación geométrica y varios hallazgos
+
+![Alineación y detección de defectos AOI](docs/screenshots/aoi-vision-alignment-defects.png)
+
+### Detección localizada de un puente de soldadura
+
+![Detección AOI de un puente de soldadura](docs/screenshots/aoi-vision-main.png)
+
+## Estado actual
+
+- Proyecto Qt 6 / C++17 que se abre directamente en Qt Creator.
+- Interfaz adaptable con tres paneles.
+- Carga de una PCB de referencia y otra PCB para analizar.
+- Temas claro y oscuro.
+- Registro mediante OpenCV, corrección de perspectiva y extracción de regiones defectuosas.
+
+## Dependencia de OpenCV
+
+OpenCV está declarado en `vcpkg.json` y se compila con la misma cadena de
+herramientas MinGW utilizada por Qt. Desde el directorio del proyecto puede
+instalarse o restaurarse mediante:
+
+```powershell
+$env:PATH = "C:\Qt\Tools\mingw1310_64\bin;C:\Qt\Tools\Ninja;" + $env:PATH
+C:\vcpkg\vcpkg.exe install --triplet x64-mingw-dynamic
+```
+
+## Abrir en Qt Creator
+
+Abre `AOIVisionLabQt.pro`, selecciona el kit Desktop Qt 6 MinGW de 64 bits y
+compila el proyecto.
+
+## Automatización mediante IA y MCP
+
+La interfaz gráfica y la automatización externa comparten el mismo motor de
+inspección C++/OpenCV. Puede analizarse una placa sin abrir la interfaz:
+
+```powershell
+AOIVisionLabQt.exe --reference referencia.png --inspect candidata.png `
+  --report resultado.json --visualization resultado-marcado.png
+```
+
+`automation/aoi_mcp_server.py` publica esta operación como la herramienta MCP
+local `analyze_board`. Recibe las rutas absolutas de la referencia y la placa
+candidata, devuelve datos JSON estructurados y puede guardar tanto el informe
+como la imagen marcada. El servidor utiliza la entrada y salida estándar, no
+requiere paquetes adicionales de Python y no envía las imágenes de producción
+a ningún servicio externo. Se incluye una configuración de cliente en
+`automation/mcp-config-example.json`.
