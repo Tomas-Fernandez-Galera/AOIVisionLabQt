@@ -7,10 +7,12 @@
 #include <QCoreApplication>
 #include <QFile>
 #include <QFileInfo>
+#include <QDir>
 #include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QTextStream>
+#include <QTimer>
 
 namespace {
 
@@ -92,6 +94,9 @@ int main(int argc, char *argv[])
     parser.addOption({QStringLiteral("inspect"), QStringLiteral("Candidate PCB image."), QStringLiteral("path")});
     parser.addOption({QStringLiteral("report"), QStringLiteral("Write the JSON report to this path."), QStringLiteral("path")});
     parser.addOption({QStringLiteral("visualization"), QStringLiteral("Write the marked result image to this path."), QStringLiteral("path")});
+    parser.addOption({QStringLiteral("screenshot"), QStringLiteral("Capture the application window to this PNG path."), QStringLiteral("path")});
+    parser.addOption({QStringLiteral("demo"), QStringLiteral("Demo identifier used for a screenshot."), QStringLiteral("id"), QStringLiteral("led-missing")});
+    parser.addOption({QStringLiteral("light"), QStringLiteral("Use the light theme for a screenshot.")});
     parser.process(application);
 
     const bool automated = parser.isSet(QStringLiteral("reference")) ||
@@ -105,5 +110,15 @@ int main(int argc, char *argv[])
 
     MainWindow window;
     window.showMaximized();
+    if (parser.isSet(QStringLiteral("screenshot"))) {
+        window.prepareScreenshot(parser.value(QStringLiteral("demo")),
+                                 parser.isSet(QStringLiteral("light")));
+        const QString output = QFileInfo(parser.value(QStringLiteral("screenshot"))).absoluteFilePath();
+        QDir().mkpath(QFileInfo(output).absolutePath());
+        QTimer::singleShot(1400, &window, [&window, output, &application]() {
+            window.grab().save(output, "PNG");
+            application.quit();
+        });
+    }
     return application.exec();
 }

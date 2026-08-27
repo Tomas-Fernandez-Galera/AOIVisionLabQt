@@ -16,6 +16,7 @@ class MainWindow final : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow() override;
+    void prepareScreenshot(const QString &demoId, bool lightTheme);
 
 private slots:
     void chooseReferenceImage();

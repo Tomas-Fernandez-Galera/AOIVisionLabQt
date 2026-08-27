@@ -6,6 +6,16 @@ automated optical inspection concepts.
 The public project is intended as a technical portfolio demonstration. It is not
 a production inspection system and must not be used to certify manufactured parts.
 
+## Screenshots
+
+### Geometric alignment and multiple findings
+
+![AOI alignment and defect detection](docs/screenshots/aoi-vision-alignment-defects.png)
+
+### Localized solder-bridge detection
+
+![AOI solder bridge detection](docs/screenshots/aoi-vision-main.png)
+
 ## Current state
 
 - Qt 6 / C++17 project that opens directly in Qt Creator.

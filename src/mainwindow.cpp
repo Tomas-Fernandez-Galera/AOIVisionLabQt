@@ -57,6 +57,17 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+void MainWindow::prepareScreenshot(const QString &demoId, bool lightTheme)
+{
+    const int index = ui->demoCombo->findData(demoId);
+    if (index >= 0) {
+        ui->demoCombo->setCurrentIndex(index);
+        loadSelectedDemo();
+        inspectImages();
+    }
+    ui->darkThemeCheck->setChecked(lightTheme);
+}
+
 QString MainWindow::uiText(const char *english, const char *spanish) const
 {
     return QString::fromUtf8(spanishLanguage ? spanish : english);
