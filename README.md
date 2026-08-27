@@ -54,6 +54,16 @@ server uses standard input/output, has no Python package dependencies and does
 not upload production images to any external service. A client configuration
 example is included in `automation/mcp-config-example.json`.
 
+## Windows SmartScreen and file verification
+
+The portable executable is currently unsigned, so Windows SmartScreen may show
+a warning on first launch. Download releases only from this repository and
+compare the ZIP's SHA-256 value with the digest published in the release notes:
+
+```powershell
+Get-FileHash .\AOIVisionLabQt-0.1.0-Windows-x64.zip -Algorithm SHA256
+```
+
 ---
 
 # AOI Vision Lab Qt — Español
@@ -116,3 +126,14 @@ como la imagen marcada. El servidor utiliza la entrada y salida estándar, no
 requiere paquetes adicionales de Python y no envía las imágenes de producción
 a ningún servicio externo. Se incluye una configuración de cliente en
 `automation/mcp-config-example.json`.
+
+## Windows SmartScreen y verificación del archivo
+
+El ejecutable portable todavía no está firmado, por lo que Windows SmartScreen
+puede mostrar una advertencia durante el primer arranque. Descarga las versiones
+únicamente desde este repositorio y compara el SHA-256 del ZIP con el publicado
+en las notas de la versión:
+
+```powershell
+Get-FileHash .\AOIVisionLabQt-0.1.0-Windows-x64.zip -Algorithm SHA256
+```

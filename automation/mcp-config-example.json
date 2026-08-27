@@ -3,7 +3,7 @@
     "aoi-vision-lab": {
       "command": "python",
       "args": [
-        "C:/Proyectos/AOIVisionLabQt/automation/aoi_mcp_server.py"
+        "C:/path/to/AOIVisionLabQt/automation/aoi_mcp_server.py"
       ]
     }
   }
